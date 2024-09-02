@@ -1,0 +1,57 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Question {
+  content     String?
+  createdAt   DateTime               @default(now())
+  hints       Hint[]
+  id          String                 @id @default(cuid())
+  status      EnumQuestionStatus?
+  suggestions Suggestion[]
+  typeField   EnumQuestionTypeField?
+  updatedAt   DateTime               @updatedAt
+}
+
+model Hint {
+  content    String?
+  createdAt  DateTime  @default(now())
+  id         String    @id @default(cuid())
+  question   Question? @relation(fields: [questionId], references: [id])
+  questionId String?
+  updatedAt  DateTime  @updatedAt
+}
+
+model Suggestion {
+  content    String?
+  createdAt  DateTime  @default(now())
+  id         String    @id @default(cuid())
+  question   Question? @relation(fields: [questionId], references: [id])
+  questionId String?
+  updatedAt  DateTime  @updatedAt
+}
+
+model User {
+  createdAt DateTime @default(now())
+  email     String?  @unique
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  password  String
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
+
+enum EnumQuestionStatus {
+  Option1
+}
+
+enum EnumQuestionTypeField {
+  Option1
+}
